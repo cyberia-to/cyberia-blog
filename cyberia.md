@@ -1,7 +1,9 @@
 ---
+title: Cyberia
 tags: nav, blog, cyberia
 menu-order: 4
 alias: cyberia topic
+icon: "🌏"
 ---
 # cyberia
 

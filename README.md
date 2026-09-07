@@ -1,6 +1,6 @@
 ---
 title: cyberia.blog
-tags: cyberia, nav
+tags: cyberia
 crystal-type: entity
 crystal-domain: socio
 icon: "📡"

@@ -1,7 +1,9 @@
 ---
+title: Cyb
 tags: nav, blog, cyb
 menu-order: 2
 alias: cyb topic
+icon: "🤖"
 ---
 # cyb
 

@@ -1,7 +1,9 @@
 ---
+title: Cyber
 tags: nav, blog, cyber
 menu-order: 1
 alias: cyber topic
+icon: "🔵"
 ---
 # cyber
 
