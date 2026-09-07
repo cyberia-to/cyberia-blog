@@ -1,0 +1,75 @@
+# cyberia.blog — the chronicle and the full project graph
+
+[site]
+title = "cyberia.blog"
+description = "the chronicle of the project, and the knowledge graph that holds it"
+base_url = "https://cyberia.blog"
+language = "en"
+root_page = "blog"
+favicon = "📡"
+
+[nav]
+menu_tag = "nav"
+
+[nav.sidebar]
+show_namespaces = true
+show_recent = true
+recent_count = 10
+show_tags = true
+
+[build]
+input_dir = "."
+output_dir = "build"
+
+[content]
+public_only = true
+exclude_patterns = ["logseq/*", "draws/*", ".git/*", "build/*", "build.*/*", "public/*", "target/*", ".DS_Store"]
+include_journals = true
+default_public = true
+
+[urls]
+style = "pretty"
+slugify = true
+
+[feeds]
+enabled = true
+items = 20
+
+[search]
+enabled = true
+engine = "json"
+
+[analytics]
+snippet = """<script type="module" src="https://lytics.cyb.ai/tracker/loader.js" data-endpoint="https://lytics.cyb.ai"></script>"""
+
+[graph]
+enabled = true
+show_minimap = true
+minimap_depth = 2
+minimap_max_nodes = 30
+
+[style]
+primary_color = "#22c55e"
+secondary_color = "#06b6d4"
+bg_color = "#000000"
+text_color = "#f0f0f0"
+surface_color = "#111111"
+border_color = "#222222"
+
+[style.dark]
+bg_color = "#000000"
+text_color = "#f0f0f0"
+surface_color = "#111111"
+border_color = "#222222"
+
+[style.typography]
+font_body = "'Play', system-ui, sans-serif"
+font_mono = "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace"
+font_size_base = "1rem"
+line_height = "1.7"
+max_width = "48rem"
+
+[style.code]
+theme_light = "base16-ocean.light"
+theme_dark = "base16-ocean.dark"
+show_line_numbers = false

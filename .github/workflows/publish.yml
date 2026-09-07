@@ -1,0 +1,109 @@
+name: Publish
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [content-changed]
+
+concurrency:
+  group: publish
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone cyberia-blog into ~/cyber/cyberia-blog
+        run: |
+          mkdir -p "$HOME/cyber"
+          git clone --depth 1 https://github.com/cyberia-to/cyberia-blog.git "$HOME/cyber/cyberia-blog"
+
+      - name: Install Nushell
+        run: |
+          NU_TAG=$(curl -fsSL https://api.github.com/repos/nushell/nushell/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
+          NU_VER="${NU_TAG#v}"
+          ARCHIVE="nu-${NU_VER}-x86_64-unknown-linux-gnu.tar.gz"
+          curl -fsSL "https://github.com/nushell/nushell/releases/download/${NU_TAG}/${ARCHIVE}" -o /tmp/nu.tar.gz
+          tar -xzf /tmp/nu.tar.gz -C /tmp
+          sudo cp "/tmp/nu-${NU_VER}-x86_64-unknown-linux-gnu/nu" /usr/local/bin/nu
+          nu --version
+
+      - name: Clone public subgraphs from subgraphs.toml
+        run: |
+          cd "$HOME/cyber/cyberia-blog"
+          nu -c '
+            let decls = (open subgraphs.toml | get subgraph)
+            $decls
+            | where {|d| ($d.name? | default "") != "cyberia-blog"}
+            | where {|d| ($d.archived? | default false) != true}
+            | where {|d| ($d.orphan? | default false) != true}
+            | where {|d| ($d."local-only"? | default false) != true}
+            | where {|d| ($d.visibility? | default "public") == "public"}
+            | each {|d|
+              let name = $d.name
+              let repo = ($d.repo? | default $d.name)
+              let target = $"($env.HOME)/cyber/($name)"
+              if not ($target | path exists) {
+                print $"Cloning ($name) from ($repo)..."
+                let url = $"https://github.com/cyberia-to/($repo).git"
+                try {
+                  ^git clone --depth 1 $url $target
+                } catch {|e|
+                  print $"skip ($name): ($e.msg)"
+                }
+              }
+            }
+          '
+
+      - name: Install Rust
+        run: |
+          rustup update stable
+          rustup default stable
+
+      - name: Cache optica build
+        uses: actions/cache@v4
+        with:
+          path: |
+            /tmp/optica-target-cache
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-optica-v4
+
+      - name: Build optica
+        run: |
+          rm -rf "$HOME/cyber/optica"
+          git clone --depth 1 https://github.com/cyberia-to/optica.git "$HOME/cyber/optica"
+          if [ -d /tmp/optica-target-cache ]; then
+            mv /tmp/optica-target-cache "$HOME/cyber/optica/target"
+          fi
+          cd "$HOME/cyber/optica" && cargo build --release
+          cp -r "$HOME/cyber/optica/target" /tmp/optica-target-cache
+
+      - name: Build site
+        run: |
+          cd "$HOME/cyber/cyberia-blog"
+          nu scripts/build.nu --public-only \
+            --optica "$HOME/cyber/optica/target/release/optica" \
+            --output "$HOME/cyber/cyberia-blog/build"
+
+      - name: Upload site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cyberia-blog-site
+          path: ~/cyber/cyberia-blog/build
+          retention-days: 14
+
+      - name: Deploy to cyberproxy
+        if: github.ref == 'refs/heads/master' && env.CYBERPROXY_SSH_KEY != ''
+        env:
+          CYBERPROXY_SSH_KEY: ${{ secrets.CYBERPROXY_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$CYBERPROXY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p 8333 -H 167.235.28.94 >> ~/.ssh/known_hosts
+          rsync -az --delete -e "ssh -p 8333 -i ~/.ssh/id_ed25519" \
+            "$HOME/cyber/cyberia-blog/build/" \
+            "cyber@167.235.28.94:/var/www/html/cyberia.blog/"

@@ -1,0 +1,23 @@
+# cyberia-blog workspace — the graph assembler
+# read by scripts/sync-org.nu and scripts/build.nu
+# see SPEC.md for the reconciliation model
+
+org      = "cyberia-to"
+root_dir = "~/cyber"
+
+[graph]
+root_subgraph = "cyberia-blog"   # donates the root namespace (blog + topic hubs)
+output        = "cyberia-blog/build"
+
+[subgraphs.policy]
+clone_archived  = false
+include_private = true
+public_flag     = "--public-only"
+
+[media]
+ipfs_gateway    = "https://gateway.pinata.cloud"
+ipfs_map        = "ipfs-cache.json"
+
+[sync]
+lock_file       = "subgraphs.lock.toml"
+default_action  = "dry-run"
