@@ -1,12 +1,12 @@
 # cyberia.blog — the chronicle and the full project graph
 
 [site]
-title = "cyberia.blog"
+title = "Blog"
 description = "the chronicle of the project, and the knowledge graph that holds it"
 base_url = "https://cyberia.blog"
 language = "en"
 root_page = "blog"
-favicon = "📡"
+favicon = "📖"
 
 [nav]
 menu_tag = "nav"

@@ -1,6 +1,6 @@
 ---
 tags: nav, blog
-icon: "📡"
+icon: "📖"
 alias: chronicle
 menu-order: 0
 ---
