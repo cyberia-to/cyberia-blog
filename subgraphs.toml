@@ -315,7 +315,7 @@ visibility = "public"
 
 [[subgraph]]
 name = "warriors"
-visibility = "public"
+visibility = "private"
 
 [[subgraph]]
 name = "bita"
