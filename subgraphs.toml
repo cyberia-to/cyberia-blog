@@ -315,7 +315,7 @@ visibility = "public"
 
 [[subgraph]]
 name = "warriors"
-visibility = "private"
+visibility = "public"
 
 [[subgraph]]
 name = "bita"
@@ -324,6 +324,11 @@ visibility = "private"
 
 [[subgraph]]
 name = "erga"
+parent = "warriors"
+visibility = "public"
+
+[[subgraph]]
+name = "joy"
 parent = "warriors"
 visibility = "public"
 
