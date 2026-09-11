@@ -425,17 +425,19 @@ parent = "cyber-valley"
 visibility = "private"
 
 
-# /rockets ──────────────────────────────────
-[[subgraph]]
-name = "rockets"
-visibility = "private"
-
+# /maker, /cybernode ──────────────────────────────────
+# was nested under "rockets" — that repo was renamed to cve
+# (2026-09-11): its own root content was the village's day-to-day
+# management system, not infra tooling, and merged into cve/edem/.
+# maker + cybernode are separate repos that only ever borrowed the
+# rockets URL prefix; they mount at top level under their own names
+# now instead of under a wrapper invented to replace it. "rockets"
+# itself is a fresh, unrelated private repo as of the same date — not
+# declared here.
 [[subgraph]]
 name = "maker"
-parent = "rockets"
 visibility = "private"
 
 [[subgraph]]
 name = "cybernode"
-parent = "rockets"
 visibility = "private"
