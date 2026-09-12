@@ -96,7 +96,7 @@ jobs:
           retention-days: 14
 
       - name: Deploy to cyberproxy
-        if: github.ref == 'refs/heads/master' && env.CYBERPROXY_SSH_KEY != ''
+        if: github.ref == 'refs/heads/master' && secrets.CYBERPROXY_SSH_KEY != ''
         env:
           CYBERPROXY_SSH_KEY: ${{ secrets.CYBERPROXY_SSH_KEY }}
         run: |
