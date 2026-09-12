@@ -14,6 +14,8 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      CYBERPROXY_SSH_KEY: ${{ secrets.CYBERPROXY_SSH_KEY }}
     steps:
       - name: Clone cyberia-blog into ~/cyber/cyberia-blog
         run: |
@@ -96,9 +98,7 @@ jobs:
           retention-days: 14
 
       - name: Deploy to cyberproxy
-        if: github.ref == 'refs/heads/master' && secrets.CYBERPROXY_SSH_KEY != ''
-        env:
-          CYBERPROXY_SSH_KEY: ${{ secrets.CYBERPROXY_SSH_KEY }}
+        if: github.ref == 'refs/heads/master' && env.CYBERPROXY_SSH_KEY != ''
         run: |
           mkdir -p ~/.ssh
           echo "$CYBERPROXY_SSH_KEY" > ~/.ssh/id_ed25519
