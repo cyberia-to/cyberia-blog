@@ -440,6 +440,11 @@ name = "rockets"
 visibility = "private"
 
 [[subgraph]]
+name = "valkyra"
+parent = "rockets"
+visibility = "private"
+
+[[subgraph]]
 name = "maker"
 parent = "rockets"
 visibility = "private"
